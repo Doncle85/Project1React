@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Bouton from "../../components/Bouton/Bouton"
+import Livre from "./Livre/Livre"
 
 class Livres extends Component {
     state = {
@@ -10,6 +10,18 @@ class Livres extends Component {
             {id:4, titre:"Meme pas mal", auteur:"Alyssa malcom", nbPages:500},
         ]
     }
+
+    handleSuppressionLivre = (id) => {
+      const livreIndexTab = this.state.livres.findIndex(l => {
+          return l.id === id;
+        })
+
+        const newLivres = [...this.state.livres];
+        newLivres.splice(livreIndexTab,1);
+
+        this.setState({livres:newLivres});
+    }
+
     render() {
         return (
             <table className="table text-center">
@@ -26,11 +38,12 @@ class Livres extends Component {
                     this.state.livres.map(livre => {
                     return(
                         <tr key={livre.id}>
-                        <td>{livre.titre}</td>
-                        <td>{livre.auteur}</td>
-                        <td>{livre.nbPages}</td>
-                        <td><Bouton typeBtn="btn-warning" clic={() => console.log("modification")}>Modifier</Bouton></td>
-                        <td><Bouton typeBtn="btn-danger" clic={() => console.log("suppression")}>Supprimer</Bouton></td>
+                            <Livre
+                            titre={livre.titre}
+                            auteur={livre.auteur}
+                            nbPages={livre.nbPages}
+                            suppression={() => this.handleSuppressionLivre(livre.id)}
+                            />
                         </tr>
 
                     );
