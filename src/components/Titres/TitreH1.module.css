@@ -2,3 +2,7 @@
     font-size: 25px;
     font-family: 'Sigmar One', cursive;
 }
+
+.policeTitre:hover{
+    color: darkorange!important;
+}
