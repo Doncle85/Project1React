@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Livre from "./Livre/Livre"
+import FormulaireAjout from "./FormulaireAjout/FormulaireAjout";
 
 class Livres extends Component {
     state = {
@@ -24,6 +25,7 @@ class Livres extends Component {
 
     render() {
         return (
+            <>
             <table className="table text-center">
                 <thead>
                 <tr className="table-dark">
@@ -52,7 +54,8 @@ class Livres extends Component {
                 }
                     </tbody>
                     </table>
-
+        {this.props.ajoutLivre && <FormulaireAjout/>}
+        </>
         )
     }
 }
