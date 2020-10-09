@@ -9,7 +9,8 @@ class Livres extends Component {
             {id:2, titre:"Je prete pas", auteur:"Lyly malcom", nbPages:500},
             {id:3, titre:"I have a dream", auteur:"Nola malcom", nbPages:500},
             {id:4, titre:"Meme pas mal", auteur:"Alyssa malcom", nbPages:500},
-        ]
+        ],
+        lastIdLivre : 5,
     }
 
     handleSuppressionLivre = (id) => {
@@ -21,6 +22,24 @@ class Livres extends Component {
         newLivres.splice(livreIndexTab,1);
 
         this.setState({livres:newLivres});
+    }
+
+    handleAjoutLivre = (titre,auteur,nbPages) => {
+       const newLivre = {
+           id: this.state.lastIdLivre+1,
+           titre: titre,
+           auteur :auteur,
+           nbPages: nbPages
+       }
+       const newListLivres = [...this.state.livres];
+       newListLivres.push(newLivre);
+
+       this.setState(oldState => {
+           return {
+               livres :newListLivres,
+               lastIdLivres: oldState.lastIdLivre + 1
+           }
+       })
     }
 
     render() {
@@ -54,7 +73,7 @@ class Livres extends Component {
                 }
                     </tbody>
                     </table>
-        {this.props.ajoutLivre && <FormulaireAjout/>}
+        {this.props.ajoutLivre && <FormulaireAjout validation={this.handleAjoutLivre}/>}
         </>
         )
     }
