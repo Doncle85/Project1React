@@ -40,6 +40,7 @@ class Livres extends Component {
                lastIdLivres: oldState.lastIdLivre + 1
            }
        })
+        this.props.fermerAjoutLivre();
     }
 
     render() {
