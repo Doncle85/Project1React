@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Livre from "./Livre/Livre"
 import FormulaireAjout from "./FormulaireAjout/FormulaireAjout";
+import FormulaireModifification from "./FormulaireModification/FormulaireModification";
+import Alert from "../../components/Alert/Alert"
 
 class Livres extends Component {
     state = {
@@ -11,6 +13,8 @@ class Livres extends Component {
             {id:4, titre:"Meme pas mal", auteur:"Alyssa malcom", nbPages:500},
         ],
         lastIdLivre : 5,
+        idLivreAModifier : 0,
+        alertMessage : null
     }
 
     handleSuppressionLivre = (id) => {
@@ -21,7 +25,13 @@ class Livres extends Component {
         const newLivres = [...this.state.livres];
         newLivres.splice(livreIndexTab,1);
 
-        this.setState({livres:newLivres});
+        this.setState({
+            livres:newLivres,
+            alertMessage:{
+                message:"Suppression effectuée",
+                type:"alert-danger"
+            }
+        });
     }
 
     handleAjoutLivre = (titre,auteur,nbPages) => {
@@ -37,39 +47,84 @@ class Livres extends Component {
        this.setState(oldState => {
            return {
                livres :newListLivres,
-               lastIdLivres: oldState.lastIdLivre + 1
+               lastIdLivres: oldState.lastIdLivre + 1,
+               alertMessage:{
+                   message:"Ajout efféctué",
+                   type : "alert-success"
+               }
            }
        })
         this.props.fermerAjoutLivre();
     }
 
+    handleModificationLivre = (id,titre,auteur,nbPages) => {
+        const caseLivre = this.state.livres.findIndex(l => {
+            return l.id === id;
+        });
+
+        const newLivre = {
+            id,
+            titre,
+            auteur,
+            nbPages
+        };
+
+        const newListe = [...this.state.livres];
+        newListe[caseLivre] = newLivre;
+
+        this.setState({
+            livres : newListe,
+            idLivreAModifier : 0,
+            alertMessage: {
+                message: "Modification effectuée",
+                type: "alert-warning"
+            }
+        })
+}
+
     render() {
         return (
             <>
+                {this.state.alertMessage && <Alert typeAlert={this.state.alertMessage.type}>{this.state.alertMessage.message}</Alert>}
             <table className="table text-center">
                 <thead>
                 <tr className="table-dark">
                     <th>Titre</th>
                     <th>Auteur</th>
                     <th>Nombre de pages</th>
-                    <th colspan="2">Actions</th>
+                    <th colSpan="2">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 {
                     this.state.livres.map(livre => {
-                    return(
-                        <tr key={livre.id}>
-                            <Livre
+                        if(livre.id !== this.state.idLivreAModifier) {
+                            return (
+                                <tr key={livre.id}>
+                                    <Livre
+                                        titre={livre.titre}
+                                        auteur={livre.auteur}
+                                        nbPages={livre.nbPages}
+                                        suppression={() => this.handleSuppressionLivre(livre.id)}
+                                        modification={() => this.setState({idLivreAModifier: livre.id})}
+                                    />
+                                </tr>
+
+                            );
+                        }else{
+                            return(
+                                <tr key={livre.id}>
+                                <FormulaireModifification
+                                id={livre.id}
                             titre={livre.titre}
                             auteur={livre.auteur}
                             nbPages={livre.nbPages}
-                            suppression={() => this.handleSuppressionLivre(livre.id)}
+                            validationModification={this.handleModificationLivre}
                             />
-                        </tr>
-
-                    );
-
+                                </tr>
+                            )
+                            ;
+                        }
                 })
                 }
                     </tbody>
